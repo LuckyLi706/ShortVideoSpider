@@ -6,69 +6,115 @@ headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
                          "Chrome/94.0.4606.71 Safari/537.36 "}
 
 
-def douyin(url=''):
-    # 参考 https://blog.csdn.net/m0_46521785/article/details/109684811
-    # 获取抖音用户信息 （sec_uid咋生成的？？）
-    # https://www.iesdouyin.com/web/api/v2/user/info/?sec_uid=MS4wLjABAAAAsRIQ9howZwtPIsFFZhkMS6q2KIc4wLs5q7LlExJqUNA
-    # 获取抖音用户下的所有视频  （max_cursor 是否可以滑动，_signature咋来的？？）
-    # https://www.iesdouyin.com/web/api/v2/aweme/post/?sec_uid=MS4wLjABAAAAsRIQ9howZwtPIsFFZhkMS6q2KIc4wLs5q7LlExJqUNA&count=21&max_cursor=0&_signature=5ifCTAAAhPBHTuX.S4ev0uYnwl
-    resp = requests.get(url).url  # 获取url的重定向地址
-    print(resp)
-    real_url = "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids=" + resp.replace(
-        "https://www.douyin.com/video/", "")
-    response = requests.get(real_url, headers=headers)
-    json_response = response.json()
-    print(json_response)
-    video_url = json_response['item_list'][0]['video']['play_addr']['url_list'][0]
-    return str(video_url).replace("playwm", "play")
+def single_video_douyin(url='', is_origin=0):
+    try:
+        url = analyse_url(url)
+        # 参考 https://blog.csdn.net/m0_46521785/article/details/109684811
+        resp = requests.get(url).url  # 获取url的重定向地址
+        item_ids = remove_url_before(resp, "https://www.douyin.com/video/")
+        real_url = f'https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids={item_ids}'
+        response = requests.get(real_url, headers=headers)
+        json_response = response.json()
+        if is_origin != 0:
+            json_response['code'] = 200
+            return json_response
+        else:
+            video_url = json_response['item_list'][0]['video']['play_addr']['url_list'][0]
+            return {'video_url': str(video_url).replace('playwm', 'play'), 'code': 200}
+    except Exception as result:
+        json_error = {'code': 500, 'des': f'系统内部出现异常，{result}'}
+        return json_error
 
 
 def douyin_user_info(url=''):
-    # 参考 https://blog.csdn.net/m0_46521785/article/details/109684811
-    # 获取抖音用户信息 （sec_uid就是重定向地址后面的值）
-    # https://www.iesdouyin.com/web/api/v2/user/info/?sec_uid=MS4wLjABAAAAsRIQ9howZwtPIsFFZhkMS6q2KIc4wLs5q7LlExJqUNA
-    # 获取抖音用户下的所有视频  （max_cursor 是否可以滑动，_signature难分析）
-    # https://www.iesdouyin.com/web/api/v2/aweme/post/?sec_uid=MS4wLjABAAAAsRIQ9howZwtPIsFFZhkMS6q2KIc4wLs5q7LlExJqUNA&count=21&max_cursor=0&_signature=5ifCTAAAhPBHTuX.S4ev0uYnwl
-    resp = requests.get(url).url  # 获取url的重定向地址
-    print(resp)
-    real_url = "https://www.iesdouyin.com/web/api/v2/user/info/?sec_uid=" + resp.replace(
-        "https://www.douyin.com/user/", "")
-    response = requests.get(real_url, headers=headers)
-    json_response = response.json()
-    print(json_response)
-    return json_response
+    try:
+        # 获取抖音用户信息 （sec_uid就是重定向地址后面的值）
+        # https://www.iesdouyin.com/web/api/v2/user/info/?sec_uid=MS4wLjABAAAAsRIQ9howZwtPIsFFZhkMS6q2KIc4wLs5q7LlExJqUNA
+        url = analyse_url(url)
+        resp = requests.get(url).url  # 获取url的重定向地址
+        sec_uid = remove_url_before(resp)
+        real_url = f'https://www.iesdouyin.com/web/api/v2/user/info/?sec_uid={sec_uid}'
+        response = requests.get(real_url, headers=headers)
+        json_response = response.json()
+        json_response['code'] = 200
+        return json_response
+    except Exception as result:
+        json_error = {'code': 500, 'des': f'系统内部出现异常，{result}'}
+        return json_error
+
+
+def list_video_douyin(url='', max_cursor=0, is_origin=0):
+    try:
+        url = analyse_url(url)
+        resp = requests.get(url).url  # 获取url的重定向地址
+        sec_uid = remove_url_before(resp)
+        # 获取抖音用户下的所有视频  （max_cursor 是否可以滑动，_signature难分析）
+        # https://www.iesdouyin.com/web/api/v2/aweme/post/?sec_uid=MS4wLjABAAAAsRIQ9howZwtPIsFFZhkMS6q2KIc4wLs5q7LlExJqUNA&count=21&max_cursor=0&_signature=5ifCTAAAhPBHTuX.S4ev0uYnwl
+        real_url = f'https://www.iesdouyin.com/web/api/v2/aweme/post/?sec_uid={sec_uid}&count=21&max_cursor={max_cursor}'
+        response = requests.get(real_url, headers=headers)
+        json_response = response.json()
+        if is_origin != 0:
+            json_response['code'] = 200
+            return json_response
+        else:
+            video_url_list = []
+            aweme_list = json_response['aweme_list']
+            max_cursor = json_response['max_cursor']
+            has_more = json_response['has_more']
+            for key in aweme_list:
+                video_url = key['video']['download_addr']['url_list'][0]
+                video_url_list.append(video_url.replace('watermark=1', 'watermark=0'))
+            return {'code': 200, 'max_cursor': max_cursor, 'has_more': has_more, 'video_url_list': video_url_list}
+    except Exception as result:
+        json_error = {'code': 500, 'des': f'系统内部出现异常，{result}'}
+        return json_error
+
+
+def remove_url_before(resp, value='https://www.douyin.com/user/'):
+    return resp.replace(
+        value, "")
 
 
 def analyse_url(url=''):
-    if len(url) == 0:
-        return "url是空的"
-    else:
-        if not url.startswith("https"):
-            print(url)
-            url_1 = url[url.rfind('https'):]
-            print(url_1)
-            url = url_1[0:url_1.rfind('/')]
-    try:
-        return douyin(url)
-    except (RuntimeError, TypeError, NameError):
-        return "系统出现异常，url解析失败"
+    if not url.startswith('https'):
+        text_list = url.split(" ")
+        for i in range(len(text_list)):
+            if text_list[i].startswith("https") & text_list[i].__contains__("douyin.com"):
+                return text_list[i]
+    return url
 
 
 app = Flask(__name__)
 
 
-# 获取真实的下载地址
-@app.route("/douyin", methods=['GET'])
-def dy_url():
+# 获取单个抖音的真实下载地址
+@app.route('/douyin/single', methods=['GET'])
+def dy_video_url():
     url = request.args.get('url')
-    return analyse_url(url=url)
+    is_origin = request.args.get('is_origin')
+    if is_origin is None:
+        is_origin = 0
+    return single_video_douyin(url=url, is_origin=int(is_origin))
 
 
 # 获取用户信息
-@app.route("/user", methods=['GET'])
+@app.route('/douyin/user', methods=['GET'])
 def dy_user_info():
     url = request.args.get('url')
     return douyin_user_info(url=url)
+
+
+# 获取当前用户下的抖音列表
+@app.route('/douyin/list', methods=['GET'])
+def dy_user_video_list():
+    url = request.args.get('url')
+    max_cursor = request.args.get('max_cursor')
+    is_origin = request.args.get('is_origin')
+    if max_cursor is None:
+        max_cursor = 0
+    if is_origin is None:
+        is_origin = 0
+    return list_video_douyin(url=url, max_cursor=int(max_cursor), is_origin=int(is_origin))
 
 
 if __name__ == '__main__':
