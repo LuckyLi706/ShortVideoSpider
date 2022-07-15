@@ -225,9 +225,7 @@
             "video_text": null
         }
     ],
-    "status_code": 0
-}
-    ```
+    "status_code": 0   } ```
 
 ### 多个视频
    + 本地地址：http://192.168.30.56:8080/douyin/list?url=https://v.douyin.com/2YVVPR7/&is_origin=0&max_cursor=0
@@ -246,14 +244,12 @@
      参数说明：
      url：分享的用户主页链接,可以直接使用复制内容，会解析里面的链接
      返回数据：
-     {
-    "code": 200,
-    "extra": {
+     { "code": 200,
+       "extra": {
         "logid": "20220715151907010209168157440162C9",
-        "now": 1657869547000
-    },
-    "status_code": 0,
-    "user_info": {
+        "now": 1657869547000 },
+       "status_code": 0,
+       "user_info": {
         "avatar_larger": {
             "uri": "aweme-avatar/tos-cn-i-0813_8b7da88366bc40bba58e2f8bce0255c9",
             "url_list": [
@@ -311,6 +307,4 @@
         "uid": "405060254438335",
         "unique_id": "xsy897256134",
         "verification_type": 0
-       }
-    }
-  ```
+       }}       ```
