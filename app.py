@@ -15,12 +15,17 @@ def single_video_douyin(url='', is_origin=0):
         real_url = f'https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/?item_ids={item_ids}'
         response = requests.get(real_url, headers=headers)
         json_response = response.json()
+        if json_response['status_code'] != 0:
+            json_error = {'code': 500, 'des': f'地址解析失败，复制地址重试'}
+            return json_error
         if is_origin != 0:
             json_response['code'] = 200
             return json_response
         else:
             video_url = json_response['item_list'][0]['video']['play_addr']['url_list'][0]
-            return {'video_url': str(video_url).replace('playwm', 'play'), 'code': 200}
+            origin_cover_imager_url = json_response['item_list'][0]['video']['origin_cover']['url_list'][0]
+            return {'video_url': str(video_url).replace('playwm', 'play'), 'code': 200,
+                    'cover_image_url': origin_cover_imager_url}
     except Exception as result:
         json_error = {'code': 500, 'des': f'系统内部出现异常，{result}'}
         return json_error
@@ -29,13 +34,16 @@ def single_video_douyin(url='', is_origin=0):
 def douyin_user_info(url=''):
     try:
         # 获取抖音用户信息 （sec_uid就是重定向地址后面的值）
-        # https://www.iesdouyin.com/web/api/v2/user/info/?sec_uid=MS4wLjABAAAAsRIQ9howZwtPIsFFZhkMS6q2KIc4wLs5q7LlExJqUNA
+        # https://www.iesdouyin.com/web/api/v2/user/info/?sec_uid
         url = analyse_url(url)
         resp = requests.get(url).url  # 获取url的重定向地址
         sec_uid = remove_url_before(resp)
         real_url = f'https://www.iesdouyin.com/web/api/v2/user/info/?sec_uid={sec_uid}'
         response = requests.get(real_url, headers=headers)
         json_response = response.json()
+        if json_response['status_code'] != 0:
+            json_error = {'code': 500, 'des': f'地址解析失败，复制地址重试'}
+            return json_error
         json_response['code'] = 200
         return json_response
     except Exception as result:
@@ -53,18 +61,24 @@ def list_video_douyin(url='', max_cursor=0, is_origin=0):
         real_url = f'https://www.iesdouyin.com/web/api/v2/aweme/post/?sec_uid={sec_uid}&count=21&max_cursor={max_cursor}'
         response = requests.get(real_url, headers=headers)
         json_response = response.json()
+        if json_response['status_code'] != 0:
+            json_error = {'code': 500, 'des': f'地址解析失败，复制地址重试'}
+            return json_error
         if is_origin != 0:
             json_response['code'] = 200
             return json_response
         else:
             video_url_list = []
+            cover_image_url_list = []
             aweme_list = json_response['aweme_list']
             max_cursor = json_response['max_cursor']
             has_more = json_response['has_more']
             for key in aweme_list:
                 video_url = key['video']['download_addr']['url_list'][0]
                 video_url_list.append(video_url.replace('watermark=1', 'watermark=0'))
-            return {'code': 200, 'max_cursor': max_cursor, 'has_more': has_more, 'video_url_list': video_url_list}
+                cover_image_url_list.append(key['video']['origin_cover']['url_list'][0])
+            return {'code': 200, 'max_cursor': max_cursor, 'has_more': has_more, 'video_url_list': video_url_list,
+                    'cover_image_url_list': cover_image_url_list, 'des': ''}
     except Exception as result:
         json_error = {'code': 500, 'des': f'系统内部出现异常，{result}'}
         return json_error
@@ -86,10 +100,17 @@ def analyse_url(url=''):
 
 app = Flask(__name__)
 
+dy_video_number = 0
+dy_user_info_number = 0
+dy_user_video_list_number = 0
+
 
 # 获取单个抖音的真实下载地址
 @app.route('/douyin/single', methods=['GET'])
 def dy_video_url():
+    global dy_video_number
+    dy_video_number = dy_video_number + 1
+    print(f"dy_video_url:{dy_video_number}")
     url = request.args.get('url')
     is_origin = request.args.get('is_origin')
     if is_origin is None:
@@ -100,6 +121,9 @@ def dy_video_url():
 # 获取用户信息
 @app.route('/douyin/user', methods=['GET'])
 def dy_user_info():
+    global dy_user_info_number
+    dy_user_info_number = dy_user_info_number + 1
+    print(f"dy_user_info:{dy_user_info_number}")
     url = request.args.get('url')
     return douyin_user_info(url=url)
 
@@ -107,6 +131,9 @@ def dy_user_info():
 # 获取当前用户下的抖音列表
 @app.route('/douyin/list', methods=['GET'])
 def dy_user_video_list():
+    global dy_user_video_list_number
+    dy_user_video_list_number = dy_user_video_list_number + 1
+    print(f"dy_user_video_list:{dy_user_video_list_number}")
     url = request.args.get('url')
     max_cursor = request.args.get('max_cursor')
     is_origin = request.args.get('is_origin')
