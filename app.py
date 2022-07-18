@@ -23,7 +23,7 @@ def single_video_douyin(url='', is_origin=0):
             return json_response
         else:
             video_url = json_response['item_list'][0]['video']['play_addr']['url_list'][0]
-            origin_cover_imager_url = json_response['item_list'][0]['video']['origin_cover']['url_list'][0]
+            origin_cover_imager_url = json_response['item_list'][0]['video']['dynamic_cover']['url_list'][0]
             return {'video_url': str(video_url).replace('playwm', 'play'), 'code': 200,
                     'cover_image_url': origin_cover_imager_url}
     except Exception as result:
@@ -59,6 +59,7 @@ def list_video_douyin(url='', max_cursor=0, is_origin=0):
         # 获取抖音用户下的所有视频  （max_cursor 是否可以滑动，_signature难分析）
         # https://www.iesdouyin.com/web/api/v2/aweme/post/?sec_uid=MS4wLjABAAAAsRIQ9howZwtPIsFFZhkMS6q2KIc4wLs5q7LlExJqUNA&count=21&max_cursor=0&_signature=5ifCTAAAhPBHTuX.S4ev0uYnwl
         real_url = f'https://www.iesdouyin.com/web/api/v2/aweme/post/?sec_uid={sec_uid}&count=21&max_cursor={max_cursor}'
+        print(real_url)
         response = requests.get(real_url, headers=headers)
         json_response = response.json()
         if json_response['status_code'] != 0:
@@ -74,9 +75,14 @@ def list_video_douyin(url='', max_cursor=0, is_origin=0):
             max_cursor = json_response['max_cursor']
             has_more = json_response['has_more']
             for key in aweme_list:
-                video_url = key['video']['download_addr']['url_list'][0]
+                # 这边除了是视频还可能是音频，音频只有两项
+                if len(key['video']['play_addr']['url_list']) == 2:
+                    video_url = key['video']['play_addr']['url_list'][0]
+                    cover_image_url_list.append(key['video']['cover']['url_list'][0])
+                else:
+                    video_url = key['video']['play_addr']['url_list'][2]
+                    cover_image_url_list.append(key['video']['dynamic_cover']['url_list'][0])
                 video_url_list.append(video_url.replace('watermark=1', 'watermark=0'))
-                cover_image_url_list.append(key['video']['origin_cover']['url_list'][0])
             return {'code': 200, 'max_cursor': max_cursor, 'has_more': has_more, 'video_url_list': video_url_list,
                     'cover_image_url_list': cover_image_url_list, 'des': ''}
     except Exception as result:
