@@ -8,11 +8,12 @@
     - [单个视频](#%E5%8D%95%E4%B8%AA%E8%A7%86%E9%A2%91)
     - [多个视频](#%E5%A4%9A%E4%B8%AA%E8%A7%86%E9%A2%91)
     - [用户信息](#%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF)
+  - [免责声明](#%E5%85%8D%E8%B4%A3%E5%A3%B0%E6%98%8E)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # 短视频爬虫
-使用Python来爬取短视频链接，目前只抓了抖音的，用Flask生成了Api接口,
+使用Python来爬取短视频链接，目前只抓了抖音的，用Flask生成了api接口,配套客户端详见[short_video_spider_client](https://github.com/LuckyLi706/short_video_spider_client)
 
 ## 需要的库
   + Flask~=2.1.2
@@ -21,225 +22,61 @@
 
 ## 接口
 ### 单个视频
-  + 本地地址：http://192.168.30.56:8080/douyin/single?url=https://v.douyin.com/2jA2dGq/&is_origin=0
+  + 本地地址：http://ip:port/douyin/single?url=https://v.douyin.com/2jA2dGq/&is_origin=0
+  + 线上地址：http://81.68.122.109:8080/douyin/single?url=https://v.douyin.com/2jA2dGq/&is_origin=0
     ```
     参数说明：
     url：分享的短视频链接,可以直接使用复制内容，会解析里面的链接
+    
     is_origin: 是否需要原始返回数据（0为需要，1为不需要）
+    
     返回数据（is_origin为0）：
     {
     "code": 200,
-    "video_url": "https://aweme.snssdk.com/aweme/v1/play?video_id=v0200fg10000cb6l3ojc77u09nmstov0&ratio=720p&line=0"
-    }
+    //cover_image_url 视频封面的图片地址
+    "cover_image_url": "https://p3-sign.douyinpic.com/obj/tos-cn-i-dy/b3cc0713ff7c4ad58e989ad4b8fde693?x-expires=1659412800&x-signature=SxHpFcL6X9HpvAS005QMN%2BhPh2Q%3D&from=4257465056_large",
+    //video_url 视频无水印地址
+    "video_url": "https://aweme.snssdk.com/aweme/v1/play/?video_id=v0200fg10000cb6l3ojc77u09nmstov0&ratio=720p&line=0"
+}
+
     返回数据（is_origin为1）：
-    {
-    "code": 200,
-    "extra": {
-        "logid": "202207151459210102080660730D0001F0",
-        "now": 1657868362000
-    },
-    "filter_list": [],
-    "item_list": [
-        {
-            "author": {
-                "avatar_larger": {
-                    "uri": "1080x1080/aweme-avatar/mosaic-legacy_c150001e6de3d8e4e65",
-                    "url_list": [
-                        ......
-                    ]
-                },
-                "avatar_medium": {
-                    "uri": "720x720/aweme-avatar/mosaic-legacy_c150001e6de3d8e4e65",
-                    "url_list": [
-                        ......
-                    ]
-                },
-                "avatar_thumb": {
-                    "uri": "100x100/aweme-avatar/mosaic-legacy_c150001e6de3d8e4e65",
-                    "url_list": [
-                        .....
-                    ]
-                },
-                "card_entries": null,
-                "follow_status": 0,
-                "followers_detail": null,
-                "geofencing": null,
-                "mix_info": null,
-                "nickname": "陈翔六点半",
-                "platform_sync_info": null,
-                "policy_version": null,
-                "short_id": "3559807",
-                "signature": "7月15日13:00 来我们直播间一起摸鱼？\n陈翔导演作品！\n商务合作邮箱：sw@cxldb.com",
-                "type_label": null,
-                "uid": "6556303280",
-                "unique_id": "cxldb001"
-            },
-            "author_user_id": 6556303280,
-            "aweme_id": "7119437431757229320",
-            "aweme_type": 4,
-            "category": 0,
-            "cha_list": [
-                {
-                    "cha_name": "陈翔六点半",
-                    "cid": "1585033776113694",
-                    "connect_music": null,
-                    "cover_item": {
-                        "uri": "compass/RfupYzYBDKSUTF",
-                        "url_list": [
-                            ......
-                        ]
-                    },
-                    "desc": "",
-                    "hash_tag_profile": "compass/RfupYzYBDKSUTF",
-                    "is_commerce": false,
-                    "type": 1,
-                    "user_count": 0,
-                    "view_count": 0
-                }
-            ],
-            "comment_list": null,
-            "create_time": 1657623223,
-            "desc": "这个世界难道真的没有人能阻挡卷王了吗？#陈翔六点半  #公司日常 ",
-            "duration": 294618,
-            "forward_id": "0",
-            "geofencing": null,
-            "group_id": 7119437431757229000,
-            "group_id_str": "7119437431757229320",
-            "image_infos": null,
-            "images": null,
-            "is_live_replay": false,
-            "is_preview": 0,
-            "label_top_text": null,
-            "long_video": null,
-            "music": {
-                "author": "陈翔六点半",
-                "cover_hd": {
-                    "uri": "1080x1080/aweme-avatar/mosaic-legacy_c150001e6de3d8e4e65",
-                    "url_list": [
-                        .....
-                    ]
-                },
-                "cover_large": {
-                    "uri": "1080x1080/aweme-avatar/mosaic-legacy_c150001e6de3d8e4e65",
-                    "url_list": [
-                        .....
-                    ]
-                },
-                "cover_medium": {
-                    "uri": "720x720/aweme-avatar/mosaic-legacy_c150001e6de3d8e4e65",
-                    "url_list": [
-                        .....
-                    ]
-                },
-                "cover_thumb": {
-                    "uri": "168x168/aweme-avatar/mosaic-legacy_c150001e6de3d8e4e65",
-                    "url_list": [
-                        .....
-                    ]
-                },
-                "duration": 294,
-                "id": 7119437660095385000,
-                "mid": "7119437660095384334",
-                "play_url": {
-                    "uri": "https://sf6-cdn-tos.douyinstatic.com/obj/ies-music/7119437658728008461.mp3",
-                    "url_list": [
-                        "https://sf6-cdn-tos.douyinstatic.com/obj/ies-music/7119437658728008461.mp3",
-                        "https://sf3-cdn-tos.douyinstatic.com/obj/ies-music/7119437658728008461.mp3"
-                    ]
-                },
-                "position": null,
-                "status": 1,
-                "title": "@陈翔六点半创作的原声一陈翔六点半（原声中的歌曲：B-Life-C MUSIC Professional Library）"
-            },
-            "promotions": null,
-            "risk_infos": {
-                "content": "",
-                "reflow_unplayable": 0,
-                "type": 0,
-                "warn": false
-            },
-            "share_info": {
-                "share_desc": "在抖音，记录美好生活",
-                "share_title": "这个世界难道真的没有人能阻挡卷王了吗？#陈翔六点半  #公司日常 ",
-                "share_weibo_desc": "#在抖音，记录美好生活#这个世界难道真的没有人能阻挡卷王了吗？#陈翔六点半  #公司日常 "
-            },
-            "share_url": "https://www.iesdouyin.com/share/video/7119437431757229320/?region=&mid=7119437660095384334&u_code=0&did=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&iid=MS4wLjABAAAANwkJuWIRFOzg5uCpDRpMj4OX-QryoDgn-yYlXQnRwQQ&with_sec_did=1&titleType=title",
-            "statistics": {
-                "aweme_id": "7119437431757229320",
-                "comment_count": 19411,
-                "digg_count": 729690,
-                "play_count": 0,
-                "share_count": 42101
-            },
-            "text_extra": [
-                {
-                    "end": 25,
-                    "hashtag_id": 1585033776113694,
-                    "hashtag_name": "陈翔六点半",
-                    "start": 19,
-                    "type": 1
-                },
-                {
-                    "end": 32,
-                    "hashtag_id": 1591267371655182,
-                    "hashtag_name": "公司日常",
-                    "start": 27,
-                    "type": 1
-                }
-            ],
-            "video": {
-                "bit_rate": null,
-                "cover": {
-                    "uri": "tos-cn-i-dy/b3cc0713ff7c4ad58e989ad4b8fde693",
-                    "url_list": [
-                        .....
-                    ]
-                },
-                "duration": 294618,
-                "dynamic_cover": {
-                    "uri": "tos-cn-i-dy/b3cc0713ff7c4ad58e989ad4b8fde693",
-                    "url_list": [
-                        .....
-                    ]
-                },
-                "has_watermark": true,
-                "height": 1080,
-                "is_long_video": 1,
-                "origin_cover": {
-                    "uri": "tos-cn-p-0015/c28d7b873ca045a3ac18aa6a867104d7_1657623227",
-                    "url_list": [
-                        .....
-                    ]
-                },
-                "play_addr": {
-                    "uri": "v0200fg10000cb6l3ojc77u09nmstov0",
-                    "url_list": [
-                        "https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0200fg10000cb6l3ojc77u09nmstov0&ratio=720p&line=0"
-                    ]
-                },
-                "ratio": "540p",
-                "vid": "v0200fg10000cb6l3ojc77u09nmstov0",
-                "width": 1920
-            },
-            "video_labels": null,
-            "video_text": null
-        }
-    ],
-    "status_code": 0   } ```
+    抖音的详细数据，返回的数据太多，自己进行测试。
+    
+    ```
 
 ### 多个视频
-   + 本地地址：http://192.168.30.56:8080/douyin/list?url=https://v.douyin.com/2YVVPR7/&is_origin=0&max_cursor=0
+   + 本地地址：http://ip:port/douyin/list?url=https://v.douyin.com/2YVVPR7/&is_origin=0&max_cursor=0
+   + 线上地址：http://81.68.122.109:8080/douyin/list?url=https://v.douyin.com/2YVVPR7/&is_origin=0&max_cursor=0
      ```
      参数说明：（一次最多返回20条数据）
      url：分享的用户主页链接,可以直接使用复制内容，会解析里面的链接
      is_origin: 是否需要原始返回数据（0为需要，1为不需要）
      max_cursor：第一次为0，返回会有hasmore来确定是否有更多数据，设置返回的max_cursor到下次的请求参数来请求下次的数据
+     返回数据（is_origin为0）：
+    {
+    "code": 200,
+    //视频封面图片地址的列表
+    "cover_image_url_list": [
+        .....
+    ],
+    //描述信息
+    "des": "",
+    //是否有更多数据
+    "has_more": true,
+    //下次最大滑动距离
+    "max_cursor": 1643624245000,
+    //视频无水印地址列表
+    "video_url_list": [
+        .....
+    ]
+}
 
      请求的数据太多，自己进行测试。
      ```
 
 ### 用户信息
-   + 用户信息：http://192.168.30.56:8080/douyin/user?url=https://v.douyin.com/2YVVPR7/
+   + 本地地址：http://ip:port/douyin/user?url=https://v.douyin.com/2YVVPR7/
+   + 线上地址：http://81.68.122.109:8080/douyin/user?url=https://v.douyin.com/2YVVPR7/
      ```
      参数说明：
      url：分享的用户主页链接,可以直接使用复制内容，会解析里面的链接
@@ -307,4 +144,7 @@
         "uid": "405060254438335",
         "unique_id": "xsy897256134",
         "verification_type": 0
-       }}       ```
+       }}    
+       ```
+## 免责声明
+本仓库只为学习研究，如涉及侵犯个人或者团体利益，请与我取得联系，我将主动删除一切相关资料，谢谢！
