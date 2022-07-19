@@ -13,7 +13,7 @@
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # 短视频爬虫
-使用Python来爬取短视频链接，目前只抓了抖音的，用Flask生成了api接口,配套客户端详见[short_video_spider_client](https://github.com/LuckyLi706/short_video_spider_client)
+使用Python来爬取短视频链接，目前只抓了抖音的，用Flask生成了api接口，配套客户端详见[short_video_spider_client](https://github.com/LuckyLi706/short_video_spider_client)
 
 ## 需要的库
   + Flask~=2.1.2
@@ -37,7 +37,7 @@
     "cover_image_url": "https://p3-sign.douyinpic.com/obj/tos-cn-i-dy/b3cc0713ff7c4ad58e989ad4b8fde693?x-expires=1659412800&x-signature=SxHpFcL6X9HpvAS005QMN%2BhPh2Q%3D&from=4257465056_large",
     //video_url 视频无水印地址
     "video_url": "https://aweme.snssdk.com/aweme/v1/play/?video_id=v0200fg10000cb6l3ojc77u09nmstov0&ratio=720p&line=0"
-}
+    }
 
     返回数据（is_origin为1）：
     抖音的详细数据，返回的数据太多，自己进行测试。
@@ -53,23 +53,23 @@
      is_origin: 是否需要原始返回数据（0为需要，1为不需要）
      max_cursor：第一次为0，返回会有hasmore来确定是否有更多数据，设置返回的max_cursor到下次的请求参数来请求下次的数据
      返回数据（is_origin为0）：
-    {
-    "code": 200,
-    //视频封面图片地址的列表
-    "cover_image_url_list": [
+     {
+     "code": 200,
+     //视频封面图片地址的列表
+     "cover_image_url_list": [
         .....
-    ],
-    //描述信息
-    "des": "",
-    //是否有更多数据
-    "has_more": true,
-    //下次最大滑动距离
-    "max_cursor": 1643624245000,
-    //视频无水印地址列表
-    "video_url_list": [
+     ],
+     //描述信息
+     "des": "",
+     //是否有更多数据
+     "has_more": true,
+     //下次最大滑动距离
+     "max_cursor": 1643624245000,
+     //视频无水印地址列表
+     "video_url_list": [
         .....
-    ]
-}
+      ]
+     }
 
      请求的数据太多，自己进行测试。
      ```
