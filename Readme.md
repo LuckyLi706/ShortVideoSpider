@@ -19,6 +19,16 @@
   + Flask~=2.1.2
   + requests
   + pyOpenSSL
+  + Flask-APScheduler
+
+## 运行
+### 使用python运行
+python app.py (此时会走main函数)
+### 使用flask运行
+flask run -p 8080 -h 0.0.0.0 （指定主机和端口，此时不会走main函数）
+
+## 黑名单功能
+将黑名单IP填入rules.txt,以换行符隔开
 
 ## 接口
 ### 单个视频
