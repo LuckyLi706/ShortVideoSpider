@@ -6,6 +6,16 @@ from flask import Flask, request
 # 抖音爬虫地址 https://blog.csdn.net/qq470603823/article/details/109242222
 from flask_apscheduler import APScheduler
 
+
+def is_number(value: str):
+    for c in value:
+        if '0' <= c <= '9':
+            continue
+        else:
+            return False
+    return True
+
+
 headers = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
                          "Chrome/94.0.4606.71 Safari/537.36 "}
 
@@ -31,8 +41,9 @@ def single_video_douyin(url='', is_origin=0):
         else:
             video_url = json_response['item_list'][0]['video']['play_addr']['url_list'][0]
             origin_cover_imager_url = json_response['item_list'][0]['video']['dynamic_cover']['url_list'][0]
+            video_desc = json_response['item_list'][0]['desc'].replace(' ', '')
             return {'video_url': str(video_url).replace('playwm', 'play'), 'code': 200,
-                    'cover_image_url': origin_cover_imager_url}
+                    'cover_image_url': origin_cover_imager_url, 'video_desc': video_desc}
     except Exception as result:
         json_error = {'code': 500, 'des': f'系统内部出现异常，{result}'}
         return json_error
@@ -77,6 +88,7 @@ def list_video_douyin(url='', max_cursor=0, is_origin=0):
         else:
             video_url_list = []
             cover_image_url_list = []
+            video_desc_list = []
             aweme_list = json_response['aweme_list']
             max_cursor = json_response['max_cursor']
             has_more = json_response['has_more']
@@ -89,8 +101,10 @@ def list_video_douyin(url='', max_cursor=0, is_origin=0):
                     video_url = key['video']['play_addr']['url_list'][2]
                     cover_image_url_list.append(key['video']['dynamic_cover']['url_list'][0])
                 video_url_list.append(video_url.replace('watermark=1', 'watermark=0'))
+                video_desc = key['desc'].replace(' ', '')
+                video_desc_list.append(video_desc)
             return {'code': 200, 'max_cursor': max_cursor, 'has_more': has_more, 'video_url_list': video_url_list,
-                    'cover_image_url_list': cover_image_url_list, 'des': ''}
+                    'cover_image_url_list': cover_image_url_list, 'des': '', 'video_desc_list': video_desc_list}
     except Exception as result:
         json_error = {'code': 500, 'des': f'系统内部出现异常，{result}'}
         return json_error
@@ -181,6 +195,8 @@ def dy_user_video_list():
     is_origin = request.args.get('is_origin')
     if max_cursor is None:
         max_cursor = 0
+    if not is_number(max_cursor):
+        return {'code': 500, 'des': 'max_cursor必须是数字'}
     if is_origin is None:
         is_origin = 0
     return list_video_douyin(url=url, max_cursor=int(max_cursor), is_origin=int(is_origin))
