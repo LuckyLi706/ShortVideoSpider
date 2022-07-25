@@ -196,7 +196,7 @@ def dy_user_video_list():
     if max_cursor is None:
         max_cursor = 0
     if not is_number(max_cursor):
-        return {'code': 500, 'des': 'max_cursor必须是数字'}
+        return {'code': 500, 'des': 'max_cursor必须是数字,请勿轻易改动默认值'}
     if is_origin is None:
         is_origin = 0
     return list_video_douyin(url=url, max_cursor=int(max_cursor), is_origin=int(is_origin))
