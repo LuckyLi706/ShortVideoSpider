@@ -75,7 +75,7 @@ def douyin_list(url='', max_cursor=0, is_origin=0):
             has_more = json_response['has_more']
             for key in aweme_list:
                 # 这边除了是视频还可能是音频，音频只有两项
-                if len(key['video']['play_addr']['url_list']) == 2:
+                if len(key['video']['play_addr']['url_list']) <= 2:
                     video_url = key['video']['play_addr']['url_list'][0]
                     cover_image_url_list.append(key['video']['cover']['url_list'][0])
                 else:
