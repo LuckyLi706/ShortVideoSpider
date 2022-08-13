@@ -56,7 +56,10 @@ def douyin_list(url='', max_cursor=0, is_origin=0):
     try:
         url = format_url(ShortVideoType.DOU_YIN, url)
         resp = requests.get(url).url  # 获取url的重定向地址
-        params = {'sec_uid': resp.replace(__DOUYIN_PREFIX_LIST_URL, ''), 'count': 21, 'max_cursor': max_cursor}
+        sec_uid = resp.replace(__DOUYIN_PREFIX_LIST_URL, '')
+        if sec_uid.__contains__('?'):
+            sec_uid = sec_uid.split('?')[0]
+        params = {'sec_uid': sec_uid, 'count': 21, 'max_cursor': max_cursor}
         print(params)
         response = requests.get(__DOUYIN_LIST_BASE_URL, params=params, headers=__REQUEST_HEADER)
         json_response = response.json()

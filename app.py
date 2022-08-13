@@ -79,7 +79,7 @@ def dy_user_video_list():
     return video.douyin_list(url=url, max_cursor=int(max_cursor), is_origin=int(is_origin))
 
 
-# 获取单个抖音的真实下载地址
+# 获取单个tiktok的真实下载地址
 @app.route('/tiktok/single', methods=['GET'])
 def tt_single_video():
     if ip_black_rules(request.remote_addr):
