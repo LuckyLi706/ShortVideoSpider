@@ -88,7 +88,8 @@ def douyin_list(url='', max_cursor=0, is_origin=0):
                 video_desc = key['desc'].replace(' ', '')
                 video_desc_list.append(video_desc)
             return {'code': 200, 'max_cursor': max_cursor, 'has_more': has_more, 'video_url_list': video_url_list,
-                    'cover_image_url_list': cover_image_url_list, 'des': '', 'video_desc_list': video_desc_list}
+                    'cover_image_url_list': cover_image_url_list, 'des': '', 'video_desc_list': video_desc_list,
+                    "sec_uid": sec_uid}
     except Exception as result:
         json_error = {'code': 500, 'des': f'系统内部出现异常，{result}'}
         return json_error
