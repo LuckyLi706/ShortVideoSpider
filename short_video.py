@@ -2,15 +2,16 @@
 针对短视频处理类
 目前支持抖音单个视频和多个视频的获取
 """
+# -- coding: utf-8 --
 import re
 
 import requests
 from short_video_type import ShortVideoType
 
-__REQUEST_HEADER = {"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                                  "Chrome/94.0.4606.71 Safari/537.36 "}
+__REQUEST_HEADER = {"user-agent": "Mozilla/5.0 (Linux; Android 9.0; SAMSUNG SM-F900U Build/PPR1.180610.011) "
+                                  "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36"}
 # tiktok需要代理
-__REQUEST_PROXIES = {"http": "http://127.0.0.1:7890", "https": "http://127.0.0.1:7890", }
+__REQUEST_PROXIES = {"http": "http://127.0.0.1:7890", "https": "https://127.0.0.1:7890", }
 __DOUYIN_SINGLE_BASE_URL = "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/"
 __DOUYIN_LIST_BASE_URL = "https://www.iesdouyin.com/web/api/v2/aweme/post/"
 __DOUYIN_PREFIX_SINGLE_URL = "https://www.douyin.com/video/"
@@ -28,11 +29,18 @@ def format_url(video_type, url=''):
     return url
 
 
+def get_items_ids(url=''):
+    items_ids = url.replace(__DOUYIN_PREFIX_SINGLE_URL, '')
+    if items_ids.__contains__('?'):
+        return items_ids.split('?')[0]
+    return items_ids
+
+
 def douyin_single(url='', is_origin=0):
     try:
         url = format_url(ShortVideoType.DOU_YIN, url)
         resp = requests.get(url).url  # 获取url的重定向地址
-        params = {'item_ids': resp.replace(__DOUYIN_PREFIX_SINGLE_URL, '')}
+        params = {'item_ids': get_items_ids(resp)}
         response = requests.get(__DOUYIN_SINGLE_BASE_URL, params=params, headers=__REQUEST_HEADER)
         json_response = response.json()
         if json_response['status_code'] != 0:
