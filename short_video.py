@@ -15,6 +15,7 @@ __REQUEST_PROXIES = {"http": "http://127.0.0.1:7890", "https": "https://127.0.0.
 __DOUYIN_SINGLE_BASE_URL = "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/"
 __DOUYIN_LIST_BASE_URL = "https://www.iesdouyin.com/web/api/v2/aweme/post/"
 __DOUYIN_PREFIX_SINGLE_URL = "https://www.douyin.com/video/"
+__DOUYIN_PREFIX_SINGLE_URL_NOTE = "https://www.douyin.com/note/"  # 这当前是图文信息
 __DOUYIN_PREFIX_LIST_URL = "https://www.douyin.com/user/"
 
 __TIKTOK_SINGLE_BASE_URL = "https://api.tiktokv.com/aweme/v1/aweme/detail/"
@@ -30,7 +31,7 @@ def format_url(video_type, url=''):
 
 
 def get_items_ids(url=''):
-    items_ids = url.replace(__DOUYIN_PREFIX_SINGLE_URL, '')
+    items_ids = url.replace(__DOUYIN_PREFIX_SINGLE_URL, '').replace(__DOUYIN_PREFIX_SINGLE_URL_NOTE, '')
     if items_ids.__contains__('?'):
         return items_ids.split('?')[0]
     return items_ids
@@ -40,6 +41,9 @@ def douyin_single(url='', is_origin=0):
     try:
         url = format_url(ShortVideoType.DOU_YIN, url)
         resp = requests.get(url).url  # 获取url的重定向地址
+        if resp.__contains__('note'):
+            json_error = {'code': 500, 'des': f'目前只支持视频解析,暂时不支持图文解析'}
+            return json_error
         params = {'item_ids': get_items_ids(resp)}
         response = requests.get(__DOUYIN_SINGLE_BASE_URL, params=params, headers=__REQUEST_HEADER)
         json_response = response.json()
