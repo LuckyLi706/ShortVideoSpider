@@ -41,9 +41,6 @@ def douyin_single(url='', is_origin=0):
     try:
         url = format_url(ShortVideoType.DOU_YIN, url)
         resp = requests.get(url).url  # 获取url的重定向地址
-        if resp.__contains__('note'):
-            json_error = {'code': 500, 'des': f'目前只支持视频解析,暂时不支持图文解析'}
-            return json_error
         params = {'item_ids': get_items_ids(resp)}
         response = requests.get(__DOUYIN_SINGLE_BASE_URL, params=params, headers=__REQUEST_HEADER)
         json_response = response.json()
@@ -53,7 +50,14 @@ def douyin_single(url='', is_origin=0):
         if is_origin != 0:
             json_response['code'] = 200
             return json_response
-        else:
+        elif resp.__contains__('note'):  # 解析全是图片的
+            image_list = json_response['item_list'][0]['images']
+            image_url_list = []
+            image_desc = json_response['item_list'][0]['desc']
+            for index in range(len(image_list)):
+                image_url_list.append(image_list[index]['url_list'][3])
+            return {'image_url_list': image_url_list, 'code': 200, 'image_desc': image_desc}
+        else:  # 解析视频信息
             video_url = json_response['item_list'][0]['video']['play_addr']['url_list'][0]
             origin_cover_imager_url = json_response['item_list'][0]['video']['dynamic_cover']['url_list'][0]
             video_desc = json_response['item_list'][0]['desc'].replace(' ', '')
