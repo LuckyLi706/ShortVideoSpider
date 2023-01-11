@@ -37,6 +37,14 @@ flask run -p 8080 -h 0.0.0.0 （指定主机和端口，此时不会走main函�
 
 将黑名单IP填入rules.txt,以换行符隔开
 
+## 关于Cookie
+
+1. 抖音需要携带Cookie，关于Cookie获取方式：
+
+![](images/screenshoot_1.png)
+
+2. 替换short_video.py中Cookie的内容。
+
 ## 接口
 
 ### 单个视频
@@ -59,7 +67,7 @@ flask run -p 8080 -h 0.0.0.0 （指定主机和端口，此时不会走main函�
   //video_desc 短视频的文案描述
   "video_desc":"..."
   }
-
+  
   返回数据（is_origin为1）：
   抖音的详细数据，返回的数据太多，自己进行测试。
   
@@ -96,7 +104,7 @@ flask run -p 8080 -h 0.0.0.0 （指定主机和端口，此时不会走main函�
      .....
   ]
   }
-
+  
   请求的数据太多，自己进行测试。
   ```
 
@@ -172,7 +180,7 @@ flask run -p 8080 -h 0.0.0.0 （指定主机和端口，此时不会走main函�
      "unique_id": "xsy897256134",
      "verification_type": 0
     }}    
-    ```
+  ```
 
 ## 免责声明
 
