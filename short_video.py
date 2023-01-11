@@ -9,7 +9,20 @@ import requests
 from short_video_type import ShortVideoType
 
 __REQUEST_HEADER = {"user-agent": "Mozilla/5.0 (Linux; Android 9.0; SAMSUNG SM-F900U Build/PPR1.180610.011) "
-                                  "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36"}
+                                  "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Mobile Safari/537.36",
+                    "Cookie": '__ac_nonce=063be2be9000260c8616a; '
+                              '__ac_signature=_02B4Z6wo00f01JsPGiwAAIDB48HxKq6aRUCbPx6AAEWC1JgK5i1XnxhYZV6bhMSHVm'
+                              '-1W6RcC3PEi2bOQdXX29GERz3AInNnZOhvZh2hegmceqyKB0TU5HPHRbttds2l6uRn0CnLF79DSemN1c; '
+                              's_v_web_id=verify_lcr3lkk4_nm3BMcfw_JZYJ_4FIi_B1UL_JgpgXNzIntoy; '
+                              '_tea_utm_cache_2018=undefined; '
+                              'ttwid=1%7CZmEFW4YDG2mZjAvxfCC3j3CZSeyDKE8CIIm6PYQ6m6U%7C1673407477'
+                              '%7Cea8e988f50ea4864f0acbca30ddba9dd8f54993d0dc8c60f2577cda95e12f6b1; '
+                              'msToken=22L7umFLAPPCYQD65Kxwh6EUaertkP4LBccYZmT_fOaVWt-tR6'
+                              '-a4OOwgsn_1FATJFF1vWU7BoWLo259q7eCS_geGDsJsW9dpknp1vMtpaAx3QvbJT43ofY1IzNYsg==; '
+                              'msToken=8ouSxeM_B5BbUPovBKKz5cYpukRhzu3iFdOPKLlmN54NQm_lj4NTQC'
+                              '-sZXkjAgO_dFMQe3Js5cEDc3zmFG5wyMNphesCiAuDWaRenuPPHy0GWDNZ5iqcOzuW0fUung==; '
+                              'ttcid=4169d143891843c49965001fc2b97b7c52; '
+                              'tt_scid=8O6F4JHvGPbnTJvkAOKUPdXuqoWdVIuCxHhSWlsBdXlZ4bVswKLfwe2WyqRUi5Ns731f'}
 # tiktok需要代理
 __REQUEST_PROXIES = {"http": "http://127.0.0.1:7890", "https": "https://127.0.0.1:7890", }
 __DOUYIN_SINGLE_BASE_URL = "https://www.iesdouyin.com/web/api/v2/aweme/iteminfo/"
